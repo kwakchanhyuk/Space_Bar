@@ -22,9 +22,9 @@ class Stage {
 		setTimeout(() => this.textBox.remove(), 1500);
 	}
 	callMonster(){
-		for(let i=0; i <=10; i++){
+		for(let i=0; i <=5; i++){
 
-			if(i === 10){
+			if(i === 5){
 				allMonsterComProp.arr[i] = new Monster(stageInfo.monster[this.level].bossMon, hero.movex + gameProp.screenWidth + 600 * i);
 			}else{
 				allMonsterComProp.arr[i] = new Monster(stageInfo.monster[this.level].defaultMon, hero.movex + gameProp.screenWidth + 700 * i);
@@ -65,9 +65,9 @@ class Hero {
 		this.movex = 0;
 		this.speed = 11;
 		this.direction = 'right';
-		this.attackDamage = 10000;
+		this.attackDamage = 10000000;
 		this.hpProgress = 0;
-		this.hpValue = 100000000;
+		this.hpValue = 10000000000;
 		this.defaultHpValue = this.hpValue;
 		this.realDamage = 0;
 		this.slideSpeed = 14;
@@ -249,7 +249,7 @@ class Bullet{
 		this.bulletDirection = hero.direction === 'left' ? 'left' : 'right';
 		this.x = this.bulletDirection === 'right' ? hero.movex + hero.size().width / 2 : hero.movex - hero.size().width / 2;
 
-		this.y = (hero.position().bottom + hero.size().height / 2) * -1; // 수리검 점프해도  나갈수 있게 바꿈
+		this.y = (hero.position().bottom + hero.size().height / 2) * -1+30; // 수리검 점프해도  나갈수 있게 바꿈
 		this.distance = this.x;
 		this.el.style.transform = `translate(${this.x}px, ${this.y}px)`;
 		this.parentNode.appendChild(this.el);
