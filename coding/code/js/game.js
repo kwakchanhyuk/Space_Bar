@@ -13,6 +13,9 @@ const key = {
 const allMonsterComProp = {
 	arr: []
 }
+const blockComProp = {
+	arr: []
+}
 
 const bulletComProp = {
 	launch: false,
@@ -67,6 +70,7 @@ const setGameBackground = () => {
 	gameBackground.gameBox.style.transform = `translateX(${parallaxValue}px)`;
 	let parallaxValue_block = hero.movex-gameProp.screenWidth;
 	block.el.style.transform = `translateX(${parallaxValue}px)`;
+	blockk.el.style.transform = `translateX(${parallaxValue}px)`;
 	// 구조물 페럴릭스 적용 완료
 }
 
@@ -95,10 +99,12 @@ const loadImg = () => {
 
 let hero;
 let block;
+let blockk;
 const init = () => {
 	hero = new Hero('.hero');
 	stageInfo.stage = new Stage();
 	block = new Block(block_1);
+	blockk = new Block(block_2);
 	loadImg();
 	windowEvent();
 	renderGame();

@@ -35,7 +35,7 @@ class Stage {
 	clearCheck(){
 		stageInfo.callPosition.forEach( arr => {
 			if(hero.movex >= arr && allMonsterComProp.arr.length === 0){
-				this.stageGuide('ㅋㅋ몬스터 처몰려옴');
+				this.stageGuide('');
 				stageInfo.callPosition.shift();
 
 				setTimeout(() => {
@@ -67,7 +67,7 @@ class Hero {
 		this.direction = 'right';
 		this.attackDamage = 10000000;
 		this.hpProgress = 0;
-		this.hpValue = 10000000000;
+		this.hpValue = 100000000000000;
 		this.defaultHpValue = this.hpValue;
 		this.realDamage = 0;
 		this.slideSpeed = 14;
@@ -82,6 +82,7 @@ class Hero {
 		this.jumptimer = 0;
 		this.jump_flag = 0;
 		this.jump_speed = 10;
+		this.wall_flag = 0; // wall_flag변수 추가 캐릭터가 바닥이면 0 구조물이면 1로 할 예정
 	}
 	keyMotion(){
 		if(key.keyDown['left']){
@@ -142,21 +143,31 @@ class Hero {
 		}
 
 		if(key.keyDown['jump'] && this.jump_flag == 0){this.jump_flag = 1;}
-		if(this.jump_flag == 1){			
+		if(this.jump_flag == 1){			 // 올라갈때
 			this.movey-= this.jump_speed;
 			this.jumptimer++;
-			if(this.jumptimer == 20){this.jump_flag = 2;}			
+			if(this.jumptimer == 20){this.jump_flag = 2;} // 정점			
 		}	
-		if(this.jump_flag == 2){
+		if(this.jump_flag == 2){ // 내려올때
 			this.movey+= this.jump_speed;
 			this.jumptimer--;
-			if(this.jumptimer == 0){this.jump_flag = 0;}
+			if(this.jumptimer < 1){this.jump_flag = 0;}
 		}
+		if(this.movey > -1) // 바닥 아래일 경우 캐릭터 접촉 flag를 바닥값으로 변경
+		{this.wall_flag = 0;}
+		if(this.jump_flag == 0 && this.wall_flag == 0 && this.movey < 0) 
+		//점프가 끝났으나 공중에 멈춰있는 경우의 예외처리 코드
+		{
+			if(this.movey != 0)
+			{this.movey+= this.jump_speed;}		
+		}
+	
 
 		this.el.parentNode.style.transform = `translate(${this.movex}px, ${this.movey}px)`;
 
 		//hero움직일때의 구조물 충돌 효과 함수를 여기다 쓸게여;;;
 		block.crashHero();
+		blockk.crashHero();
 	}
 	position(){
 		return{
@@ -229,7 +240,7 @@ class Hero {
 
 	box_crash() // hero 구조물 부딪혔을때 위치 조정, block클래스가 호출하고 있음
 	{
-		this.movey = block.position().top * -1.05;// -1.05값은 나도 모름 묻지 마셈 이렇게 하니깐 됨
+		this.movey = block.position().top * -1.00;
 	}
 }
 
@@ -396,8 +407,21 @@ class Monster {
 	}
 }
 
-//캐릭터 충돌시 블록 위로 올라가기 구현해야 함(완료)
-// 페럴릭스 완료
+
+
+
+			// 오류 1. 구조물 끝에서 점프하다가 밖으로 나가면 땅으로 꺼짐(flag 조정해야 될듯)
+			// 오류 2. 구조물 끝에서 점프하면 낮게 점프됨 (jump_flag를 변경해서 그럼)
+			// 오류 3. 내 정신상태 살려줘 제발
+			// 오류 1-2-3 : 2022-05-11 수정완료
+			// hero가 바닥과 접촉중인지 구조물에 접촉중인지 flag추가
+			// jump_flag과 wall_flag를 이용해 예외처리 
+			// Regression Test 결과 새로운 오류 발생 - 2022-05-11 17:58
+			// 오류4 구조물 밟고나서 이동키와 점프 계속 누르면서 앞으로가면 공중에 떠있음
+			// 오류5 구조물 여러개 설치시 땅으로 내려가짐 하하....... - 2022-05-11 20:42
+
+			
+			// 구조물을 배열 객체에 담고 계속 확인하여야함 다시 리펙토링 작업 ㄱㄱ 2022-05-12 13:10
 class Block{
 	constructor(property){ // property먹힘 map.js에서 값 가져옴
 		this.parentNode = document.querySelector('.game_app');
@@ -405,7 +429,6 @@ class Block{
 		this.el.className = property.name;
 		this.movex = property.x;
 		this.movey = property.y * -1;
-		this.crash_box = 0;
 		this.init();
 	}
 	init(){
@@ -426,27 +449,14 @@ class Block{
 			{
 				if(hero.jump_flag)
 				{
-					this.crash_box = 1
-					console.log('success');
+					hero.wall_flag = 1
 					hero.box_crash();
 				}
-				
+				 
 			}
 			
 		}
-		else{
-			// 오류 1. 구조물 끝에서 점프하다가 밖으로 나가면 땅으로 꺼짐(flag 조정해야 될듯)
-			// 오류 2. 구조물 끝에서 점프하면 낮게 점프됨 (jump_flag를 변경해서 그럼)
-			// 오류 3. 내 정신상태 살려줘 제발
-			// 개선해야할 기능 : jumptimer값을 다이나믹하게 변경
-			// 
-			if(this.crash_box)
-			{
-				this.crash_box = 0;
-				hero.jumptimer += 12;
-				hero.jump_flag = 2;
-			}
-		}
+		else{hero.wall_flag = 0;}
 	}
 
 	// position값 추가 
