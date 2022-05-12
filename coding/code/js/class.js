@@ -153,21 +153,24 @@ class Hero {
 			this.jumptimer--;
 			if(this.jumptimer < 1){this.jump_flag = 0;}
 		}
-		if(this.movey > -1) // 바닥 아래일 경우 캐릭터 접촉 flag를 바닥값으로 변경
-		{this.wall_flag = 0;}
-		if(this.jump_flag == 0 && this.wall_flag == 0 && this.movey < 0) 
-		//점프가 끝났으나 공중에 멈춰있는 경우의 예외처리 코드
+		if(this.jump_flag == 0 && this.movey < 0) //점프가 끝났으나 공중에 멈춰있는 경우의 예외처리 코드		
 		{
-			if(this.movey != 0)
-			{this.movey+= this.jump_speed;}		
+			if(this.wall_flag == 0)
+			{
+				if(this.movey != 0)
+				{this.movey+= this.jump_speed;}		
+			}
 		}
 	
 
 		this.el.parentNode.style.transform = `translate(${this.movex}px, ${this.movey}px)`;
 
 		//hero움직일때의 구조물 충돌 효과 함수를 여기다 쓸게여;;;
-		block.crashHero();
-		blockk.crashHero();
+		this.crashHero(blockComProp.arr);
+		this.not_crashHero(blockComProp.arr);
+		//this.crashHero(blockk);
+		//block.crashHero(block);
+		//blockk.crashHero(blockk);
 	}
 	position(){
 		return{
@@ -238,9 +241,46 @@ class Hero {
 		this.plusHp(this.defaultHpValue);
 	}
 
-	box_crash() // hero 구조물 부딪혔을때 위치 조정, block클래스가 호출하고 있음
+	box_crash(block_data) // hero 구조물 부딪혔을때 위치 조정, block클래스가 호출하고 있음
 	{
-		this.movey = block.position().top * -1.00;
+		this.wall_flag = 1
+		this.movey = block_data.position().top * -0.95;
+	}
+
+	not_crashHero(block_data) // 충돌 제거 기능
+	{
+		let  flag = 0;
+		for(let i=0;i<block_data.length;i++)
+			{
+			if(this.position().left+110 > block_data[i].position().left && this.position().right-110 < block_data[i].position().right)
+				{													
+						let flag = 1;		
+				}
+			}
+		if(!flag)
+		{this.wall_flag = 0;}
+		
+	}
+
+	crashHero(block_data)
+	{	// 발이 구조물에 살짝 결쳐있어도 구조물 위에 있게 만듬
+		for(let i=0;i<block_data.length;i++)
+		{
+		if(this.position().left+110 > block_data[i].position().left && this.position().right-110 < block_data[i].position().right)
+			{
+			//console.log('left_right');
+				if(this.position().bottom > block_data[i].position().top-15 && this.position().bottom < block_data[i].position().top+15 ) // hero가 점프에서 내려오는 중일때
+				{
+					//if(this.jump_flag)
+					{						
+						this.box_crash(block_data[i]);
+					}
+
+				}
+			
+			}
+		}
+		
 	}
 }
 
@@ -395,7 +435,12 @@ class Monster {
 		let rightDiff = 30;
 		let leftDiff = 90;
 		if(hero.position().right-rightDiff > this.position().left && hero.position().left + leftDiff < this.position().right){
-			hero.minusHp(this.crashDamage);
+			console.log(hero.position().top)
+			console.log(this.position().top)
+			if(hero.position().bottom+10 < this.position().top)
+			{
+				hero.minusHp(this.crashDamage);
+			}
 		}
 	}
 	setScore(){
@@ -407,59 +452,23 @@ class Monster {
 	}
 }
 
-
-
-
-			// 오류 1. 구조물 끝에서 점프하다가 밖으로 나가면 땅으로 꺼짐(flag 조정해야 될듯)
-			// 오류 2. 구조물 끝에서 점프하면 낮게 점프됨 (jump_flag를 변경해서 그럼)
-			// 오류 3. 내 정신상태 살려줘 제발
-			// 오류 1-2-3 : 2022-05-11 수정완료
-			// hero가 바닥과 접촉중인지 구조물에 접촉중인지 flag추가
-			// jump_flag과 wall_flag를 이용해 예외처리 
-			// Regression Test 결과 새로운 오류 발생 - 2022-05-11 17:58
-			// 오류4 구조물 밟고나서 이동키와 점프 계속 누르면서 앞으로가면 공중에 떠있음
-			// 오류5 구조물 여러개 설치시 땅으로 내려가짐 하하....... - 2022-05-11 20:42
-
-			
-			// 구조물을 배열 객체에 담고 계속 확인하여야함 다시 리펙토링 작업 ㄱㄱ 2022-05-12 13:10
 class Block{
-	constructor(property){ // property먹힘 map.js에서 값 가져옴
+	constructor(property){ 
 		this.parentNode = document.querySelector('.game_app');
 		this.el = document.createElement('div');
 		this.el.className = property.name;
 		this.movex = property.x;
 		this.movey = property.y * -1;
+		this.crash_box = 0
 		this.init();
 	}
+
 	init(){
 		this.el.style.left = this.movex + 'px' 
 		this.el.style.bottom = this.movey + 'px'
-		this.parentNode.appendChild(this.el);
-		
+		this.parentNode.appendChild(this.el);		
 	}
 
-
-	// 나중에 hero 부딪힐때 기능 구현
-	crashHero()
-	{	// 발이 구조물에 살짝 결쳐있어도 구조물 위에 있게 만듬
-		if(hero.position().left+110 > this.position().left && hero.position().right-110 < this.position().right)
-		{
-			//console.log('left_right');
-			if(hero.position().bottom > this.position().top-5 && hero.position().bottom < this.position().top+5 ) // hero가 점프에서 내려오는 중일때
-			{
-				if(hero.jump_flag)
-				{
-					hero.wall_flag = 1
-					hero.box_crash();
-				}
-				 
-			}
-			
-		}
-		else{hero.wall_flag = 0;}
-	}
-
-	// position값 추가 
 	position(){
 		return{
 			left: this.el.getBoundingClientRect().left,

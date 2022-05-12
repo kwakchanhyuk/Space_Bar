@@ -69,8 +69,11 @@ const setGameBackground = () => {
 	let parallaxValue = Math.min(0, (hero.movex-gameProp.screenWidth/3) * -1);
 	gameBackground.gameBox.style.transform = `translateX(${parallaxValue}px)`;
 	let parallaxValue_block = hero.movex-gameProp.screenWidth;
-	block.el.style.transform = `translateX(${parallaxValue}px)`;
-	blockk.el.style.transform = `translateX(${parallaxValue}px)`;
+	for(let i =0; i< blockComProp.arr.length;i++)
+	{
+		blockComProp.arr[i].el.style.transform = `translateX(${parallaxValue}px)`;
+	}
+
 	// 구조물 페럴릭스 적용 완료
 }
 
@@ -103,8 +106,9 @@ let blockk;
 const init = () => {
 	hero = new Hero('.hero');
 	stageInfo.stage = new Stage();
-	block = new Block(block_1);
-	blockk = new Block(block_2);
+	blockComProp.arr[0] = new Block(block_1);
+	blockComProp.arr[1] = new Block(block_2);
+	blockComProp.arr[2] = new Block(block_3);
 	loadImg();
 	windowEvent();
 	renderGame();
