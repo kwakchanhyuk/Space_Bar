@@ -9,12 +9,12 @@ const block_1 = {
 
 const block_2 = {
 	name: 'block_2',
-	x : 600,
-    y : -200,
+	x : 1900,
+    y : -160,
 }
 
 const block_3 = {
 	name: 'block_3',
-	x : 400,
-    y : -250,
+	x : 1000,
+    y : -220,
 }
