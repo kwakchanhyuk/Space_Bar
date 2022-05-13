@@ -63,14 +63,14 @@ class Hero {
 	constructor(el){
 		this.el = document.querySelector(el);
 		this.movex = 0;
-		this.speed = 11;
+		this.speed = 8;
 		this.direction = 'right';
 		this.attackDamage = 10000000;
 		this.hpProgress = 0;
 		this.hpValue = 100000000000000;
 		this.defaultHpValue = this.hpValue;
 		this.realDamage = 0;
-		this.slideSpeed = 14;
+		this.slideSpeed = 5;
 		this.slideTime = 0;
 		this.slideMaxTime = 30;
 		this.slideDown = false;
@@ -81,8 +81,10 @@ class Hero {
 		this.movey = 0;
 		this.jumptimer = 0;
 		this.jump_flag = 0;
-		this.jump_speed = 10;
+		this.jump_speed = 8;
+		this.jump_height = 25; // 점프 높이 변수 추가
 		this.wall_flag = 0; // wall_flag변수 추가 캐릭터가 바닥이면 0 구조물이면 1로 할 예정
+		this.error_jump = 0; // 더블 점프를 막기 위한 변수
 	}
 	keyMotion(){
 		if(key.keyDown['left']){
@@ -142,35 +144,42 @@ class Hero {
 			this.slideTime = 0;
 		}
 
-		if(key.keyDown['jump'] && this.jump_flag == 0){this.jump_flag = 1;}
-		if(this.jump_flag == 1){			 // 올라갈때
+		if(key.keyDown['jump'] && this.jump_flag == 0 && !this.error_jump){this.jump_flag = 1;}
+		if(this.jump_flag == 1 ){			 // 올라갈때
 			this.movey-= this.jump_speed;
 			this.jumptimer++;
-			if(this.jumptimer == 20){this.jump_flag = 2;} // 정점			
+			if(this.jumptimer == this.jump_height){this.jump_flag = 2;} // 정점			
 		}	
 		if(this.jump_flag == 2){ // 내려올때
 			this.movey+= this.jump_speed;
 			this.jumptimer--;
-			if(this.jumptimer < 1){this.jump_flag = 0;}
-		}
-		if(this.jump_flag == 0 && this.movey < 0) //점프가 끝났으나 공중에 멈춰있는 경우의 예외처리 코드		
-		{
-			if(this.wall_flag == 0)
-			{
-				if(this.movey != 0)
-				{this.movey+= this.jump_speed;}		
+			if(this.jumptimer < 1){
+				{this.jump_flag = 0;}
 			}
 		}
-	
 
+		if(this.jump_flag == 0 && this.movey < 0) //점프가 끝났으나 공중에 멈춰있는 경우의 예외처리 코드		
+		{
+			if(!this.wall_flag)
+			{		
+				this.error_jump = 1; 
+				if(this.movey != 0)
+				{this.movey+= this.jump_speed;}
+				else if(this.movey == 0)
+				{this.error_jump = 0;}
+					
+			}
+			else{this.error_jump = 0;}
+		}
+		
+		if(this.movey > 0) // 땅에 떨어졌을떄 약간의 떠있는 값 예외처리
+		{this.movey = 0; this.error_jump = 0;}
+		console.log(this.movey)
 		this.el.parentNode.style.transform = `translate(${this.movex}px, ${this.movey}px)`;
 
 		//hero움직일때의 구조물 충돌 효과 함수를 여기다 쓸게여;;;
-		this.crashHero(blockComProp.arr);
-		this.not_crashHero(blockComProp.arr);
-		//this.crashHero(blockk);
-		//block.crashHero(block);
-		//blockk.crashHero(blockk);
+		this.box_crash_Hero(blockComProp.arr);
+		this.box_not_crash_Hero(blockComProp.arr);
 	}
 	position(){
 		return{
@@ -244,17 +253,17 @@ class Hero {
 	box_crash(block_data) // hero 구조물 부딪혔을때 위치 조정, block클래스가 호출하고 있음
 	{
 		this.wall_flag = 1
-		this.movey = block_data.position().top * -0.95;
+		this.movey = block_data.position().top * -0.90;
 	}
 
-	not_crashHero(block_data) // 충돌 제거 기능
+	box_not_crash_Hero(block_data) // 충돌 제거 기능
 	{
 		let  flag = 0;
 		for(let i=0;i<block_data.length;i++)
 			{
 			if(this.position().left+110 > block_data[i].position().left && this.position().right-110 < block_data[i].position().right)
-				{													
-						let flag = 1;		
+				{			
+						flag = 1;		
 				}
 			}
 		if(!flag)
@@ -262,14 +271,14 @@ class Hero {
 		
 	}
 
-	crashHero(block_data)
+	box_crash_Hero(block_data)
 	{	// 발이 구조물에 살짝 결쳐있어도 구조물 위에 있게 만듬
 		for(let i=0;i<block_data.length;i++)
 		{
 		if(this.position().left+110 > block_data[i].position().left && this.position().right-110 < block_data[i].position().right)
 			{
 			//console.log('left_right');
-				if(this.position().bottom > block_data[i].position().top-15 && this.position().bottom < block_data[i].position().top+15 ) // hero가 점프에서 내려오는 중일때
+				if(this.position().bottom > block_data[i].position().top-10 && this.position().bottom < block_data[i].position().top+10 ) // hero가 점프에서 내려오는 중일때
 				{
 					//if(this.jump_flag)
 					{						
@@ -291,7 +300,7 @@ class Bullet{
 		this.el.className = 'hero_bullet';
 		this.x = 0;
 		this.y = 0;
-		this.speed = 30;
+		this.speed = 15;
 		this.distance = 0;
 		this.bulletDirection = 'right';
 		this.init();
@@ -435,8 +444,6 @@ class Monster {
 		let rightDiff = 30;
 		let leftDiff = 90;
 		if(hero.position().right-rightDiff > this.position().left && hero.position().left + leftDiff < this.position().right){
-			console.log(hero.position().top)
-			console.log(this.position().top)
 			if(hero.position().bottom+10 < this.position().top)
 			{
 				hero.minusHp(this.crashDamage);
