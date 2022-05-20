@@ -34,7 +34,7 @@ const stageInfo = {
 		{defaultMon: yellowMon, bossMon: yellowMonBoss},
 		{defaultMon: pinkMon, bossMon: pinkMonBoss}
 	],
-	callPosition: [1000, 5000, 9000]
+	callPosition: [0]
 }
 
 const gameProp = {
@@ -67,6 +67,9 @@ const endGame = () => {
 
 const setGameBackground = () => {
 	let parallaxValue = Math.min(0, (hero.movex-gameProp.screenWidth/3) * -1);
+	if (parallaxValue < -1500) {
+		parallaxValue = -1500;
+	 } 
 	gameBackground.gameBox.style.transform = `translateX(${parallaxValue}px)`;
 	let parallaxValue_block = hero.movex-gameProp.screenWidth;
 	for(let i =0; i< blockComProp.arr.length;i++)
@@ -101,8 +104,7 @@ const loadImg = () => {
 }
 
 let hero;
-let block;
-let blockk;
+
 const init = () => {
 	hero = new Hero('.hero');
 	stageInfo.stage = new Stage();

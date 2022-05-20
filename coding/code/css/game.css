@@ -1,11 +1,11 @@
-.game_app {overflow: hidden; position: relative; min-width:1280px; height: 100vh;}
+.game_app {overflow: hidden; z-index:1 ; position: relative; min-width:1280px; height: 100vh;}
 .game_app .game {position: absolute; left: 0; bottom: 0; z-index: 10; width: 70000px; height: 100%; background-image: url('../../../../lib/images/30020085.jpg'); background-repeat: repeat-x; background-size: auto 100%; will-change: transform;}
 .game_app .sky {position: absolute; left:0; bottom: 0; z-index:1; width: 100%; height: 100%; background-image: url('../../../../lib/images/30020085.jpg'); background-repeat: repeat-x; background-size: auto 100%;}
 .game_app .block_1 {position: absolute; left: 0px; bottom: 0px; z-index:11; width: 577px; height: 45px; background-image: url('../../../../lib/images/block.PNG'); background-repeat: no-repeat; will-change: transform;}
 .game_app .block_2 {position: absolute; left: 0px; bottom: 0px; z-index:11; width: 577px; height: 45px; background-image: url('../../../../lib/images/block.PNG'); background-repeat: no-repeat; will-change: transform;}
 .game_app .block_3 {position: absolute; left: 0px; bottom: 0px; z-index:11; width: 577px; height: 45px; background-image: url('../../../../lib/images/block.PNG'); background-repeat: no-repeat; will-change: transform;}
 
-.game_info {position: fixed; left:0; top:0; z-index:20; width: 100%; height: 150px;}
+.game_info {position: fixed; left:0;  z-index:20;top:0; width: 100%; height: 150px;}
 .game_info .hero_state {width: 300px; height: 100%; padding:10px;}
 .game_info .hero_state .hero_img {position:relative; float: left; width: 20%;}
 .game_info .hero_state .hero_img .level_box {position: absolute; left:0; top: 100%; font-size:14px; color:#fff;}
@@ -64,7 +64,7 @@
 	100% {opacity: 0;}
 }
 
-.hero_box {position: fixed; left:0; bottom: 30px; z-index:100; width: 128px; height: 128px; will-change: transform;}
+.hero_box {position: fixed; left:0; bottom: 30px; z-index: 100; width: 128px; height: 128px; will-change: transform;}
 .hero_box .hero {height: 100%; background-image: url('../../../../lib/images/data/Pink_Monster_Walk_6.png'); background-size: 768px 128px; animation: hero_idle 0.6s infinite steps(6);}
 .hero_box .hero.flip {transform: rotateY(180deg);}
 .hero_box .hero.run, .hero_box .hero.run.attack {height: 100%; background-image: url('../../../../lib/images/data/Pink_Monster_Walk_6.png'); background-size: 768px 128x; animation: hero_run 0.6s infinite steps(6);}

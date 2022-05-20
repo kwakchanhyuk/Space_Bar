@@ -22,26 +22,22 @@ class Stage {
 		setTimeout(() => this.textBox.remove(), 1500);
 	}
 	callMonster(){
-		for(let i=0; i <=5; i++){
+		
+		//allMonsterComProp.arr[0] = new Monster(stageInfo.monster[this.level].bossMon, hero.movex + gameProp.screenWidth + 100);		
+		allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].defaultMon,hero.movex +1500);
+		allMonsterComProp.arr[1] = new Monster(stageInfo.monster[0].defaultMon,hero.movex + 2000);
 
-			if(i === 5){
-				allMonsterComProp.arr[i] = new Monster(stageInfo.monster[this.level].bossMon, hero.movex + gameProp.screenWidth + 600 * i);
-			}else{
-				allMonsterComProp.arr[i] = new Monster(stageInfo.monster[this.level].defaultMon, hero.movex + gameProp.screenWidth + 700 * i);
-			}
-
-		}
+		
 	}
 	clearCheck(){
 		stageInfo.callPosition.forEach( arr => {
-			if(hero.movex >= arr && allMonsterComProp.arr.length === 0){
-				this.stageGuide('');
-				stageInfo.callPosition.shift();
-
-				setTimeout(() => {
-					this.callMonster();
-					this.level++;
-				}, 1000);
+			if(allMonsterComProp.arr.length === 0 && this.isStart == false){
+				
+				this.isStart = true;
+				//stageInfo.callPosition.shift();		
+				this.callMonster();
+			
+			
 			}
 		});
 		// if(allMonsterComProp.arr.length === 0 && this.isStart){
@@ -56,6 +52,7 @@ class Stage {
 		// 		this.stageGuide('ALL CLEAR!!');
 		// 	}
 		// }
+
 	}
 }
 
@@ -67,7 +64,7 @@ class Hero {
 		this.direction = 'right';
 		this.attackDamage = 10000000;
 		this.hpProgress = 0;
-		this.hpValue = 100000000000000;
+		this.hpValue = 10000000000000;
 		this.defaultHpValue = this.hpValue;
 		this.realDamage = 0;
 		this.slideSpeed = 5;
@@ -98,7 +95,7 @@ class Hero {
 			this.el.classList.add('run');
 			this.el.classList.remove('flip');
 
-			this.movex = this.movex + this.speed;
+			this.movex = this.movex >= 2945 ? 2945 : this.movex + this.speed;
 		}
 
 		if(key.keyDown['attack']){
@@ -174,12 +171,12 @@ class Hero {
 		
 		if(this.movey > 0) // 땅에 떨어졌을떄 약간의 떠있는 값 예외처리
 		{this.movey = 0; this.error_jump = 0;}
-		console.log(this.movey)
 		this.el.parentNode.style.transform = `translate(${this.movex}px, ${this.movey}px)`;
 
 		//hero움직일때의 구조물 충돌 효과 함수를 여기다 쓸게여;;;
 		this.box_crash_Hero(blockComProp.arr);
 		this.box_not_crash_Hero(blockComProp.arr);
+
 	}
 	position(){
 		return{
@@ -434,7 +431,7 @@ class Monster {
 		if(this.moveX + this.positionX + this.el.offsetWidth + hero.position().left - hero.movex <= 0){
 			this.moveX = hero.movex - this.positionX + gameProp.screenWidth - hero.position().left;
 		}else{
-			this.moveX -= this.speed;
+			//this.moveX -= this.speed;
 		}
 
 		this.el.style.transform = `translateX(${this.moveX}px)`;
