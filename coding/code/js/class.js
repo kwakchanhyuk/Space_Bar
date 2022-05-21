@@ -21,23 +21,22 @@ class Stage {
 
 		setTimeout(() => this.textBox.remove(), 1500);
 	}
-	callMonster(){
-		
-		//allMonsterComProp.arr[0] = new Monster(stageInfo.monster[this.level].bossMon, hero.movex + gameProp.screenWidth + 100);		
-		allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].defaultMon,hero.movex +1500);
-		allMonsterComProp.arr[1] = new Monster(stageInfo.monster[0].defaultMon,hero.movex + 2000);
 
-		
+	callMonster(){		
+		//allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].bossMon, gameProp.screenWidth);		
+		allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].defaultMon, 450, 210 , Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[1] = new Monster(stageInfo.monster[0].defaultMon, 1250, 270, Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[2] = new Monster(stageInfo.monster[0].defaultMon, 2150, 210, Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[3] = new Monster(stageInfo.monster[0].defaultMon, 1000, 30,  Math.floor(Math.random() * 1000));	
+		allMonsterComProp.arr[4] = new Monster(stageInfo.monster[0].defaultMon, 2000, 30,  Math.floor(Math.random() * 1000));	
 	}
+	
 	clearCheck(){
 		stageInfo.callPosition.forEach( arr => {
-			if(allMonsterComProp.arr.length === 0 && this.isStart == false){
-				
-				this.isStart = true;
-				//stageInfo.callPosition.shift();		
+			if(allMonsterComProp.arr.length === 0){ //&& hero.movex > arr){		//잠시 call포지션 주석처리					
+				stageInfo.callPosition.shift();		
 				this.callMonster();
-			
-			
+				this.level++;		
 			}
 		});
 		// if(allMonsterComProp.arr.length === 0 && this.isStart){
@@ -374,7 +373,7 @@ class Bullet{
 }
 
 class Monster {
-	constructor(property, positionX){
+	constructor(property, positionX, positionY, random_time){
 		this.parentNode = document.querySelector('.game');
 		this.el = document.createElement('div');
 		this.el.className = 'monster_box '+property.name;
@@ -387,21 +386,31 @@ class Monster {
 		this.hpInner = document.createElement('span');
 		this.progress = 0;
 		this.positionX = positionX;
-		this.moveX = 0;
+		this.positionY = positionY;
+		this.movex = 0;
 		this.speed = property.speed;
 		this.crashDamage = property.crashDamage;
 		this.score = property.score;
 		this.exp = property.exp;
-
-		this.init();
+		this.move_flag = 0;
+		this.move_count = 50;
+		this.wait_count = 0;
+		this.wait_flag = 1;
+		this.random_time = random_time;
+		this.setRotate = '';
+		setTimeout(() => this.init(), 500);
+		//this.init();
 	}
+
 	init(){
 		this.hpNode.appendChild(this.hpInner);
 		this.el.appendChild(this.hpNode);
 		this.el.appendChild(this.elChildren);
 		this.parentNode.appendChild(this.el);
 		this.el.style.left = this.positionX + 'px';
+		this.el.style.bottom = this.positionY + 'px'
 	}
+
 	position(){
 		return{
 			left: this.el.getBoundingClientRect().left,
@@ -410,6 +419,7 @@ class Monster {
 			bottom: gameProp.screenHeight - this.el.getBoundingClientRect().top - this.el.getBoundingClientRect().height
 		}
 	}
+
 	updateHp(index){
 		this.hpValue = Math.max(0, this.hpValue - hero.realDamage);
 		this.progress = this.hpValue / this.defaultHpValue * 100;
@@ -419,6 +429,7 @@ class Monster {
 			this.dead(index);
 		}
 	}
+
 	dead(index){
 		this.el.classList.add('remove');
 		setTimeout(() => this.el.remove(), 200);
@@ -426,17 +437,46 @@ class Monster {
 		this.setScore();
 		this.setExp();
 	}
-	moveMonster(){
 
-		if(this.moveX + this.positionX + this.el.offsetWidth + hero.position().left - hero.movex <= 0){
-			this.moveX = hero.movex - this.positionX + gameProp.screenWidth - hero.position().left;
-		}else{
-			//this.moveX -= this.speed;
+	moveMonster(){	
+		if(this.wait_flag)
+		{
+			
+			setTimeout(() => this.wait_count += 1, this.random_time);
+			if(this.wait_count > 10)
+			{
+				
+				this.wait_count = 0;
+				this.wait_flag = 0;
+				
+			}
 		}
-
-		this.el.style.transform = `translateX(${this.moveX}px)`;
+		
+		if(this.move_flag == 0 && !this.wait_flag)
+		{
+			this.setRotate = 'scaleX(1)';
+			setTimeout(() => this.movex -= this.speed , 500);
+			this.move_count += 1;
+			if(this.move_count > 100)
+			{this.move_flag = 1; this.wait_flag = 1;}
+			
+		}
+		
+		if(this.move_flag == 1 && !this.wait_flag)
+		{
+			
+			this.setRotate = 'scaleX(-1)';
+			setTimeout(() => this.movex += this.speed, 500);
+			this.move_count -= 1;
+			if(this.move_count < 0)
+			{this.move_flag = 0; this.wait_flag = 1;}
+			
+			
+		}
+		this.el.style.transform = `translate(${this.movex}px) ${this.setRotate}`;
 		this.crash();
 	}
+
 	crash(){
 		let rightDiff = 30;
 		let leftDiff = 90;

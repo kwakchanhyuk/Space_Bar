@@ -34,7 +34,7 @@ const stageInfo = {
 		{defaultMon: yellowMon, bossMon: yellowMonBoss},
 		{defaultMon: pinkMon, bossMon: pinkMonBoss}
 	],
-	callPosition: [0]
+	callPosition: [100, 5000]
 }
 
 const gameProp = {

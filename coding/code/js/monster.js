@@ -1,7 +1,7 @@
 const pinkMon = {
 	name: 'pink_mon',
 	hpValue: 200000,
-	speed: 8,
+	speed: 4,
 	crashDamage: 300,
 	score: 3000,
 	exp: 3000
@@ -10,7 +10,7 @@ const pinkMon = {
 const yellowMon = {
 	name: 'yellow_mon',
 	hpValue: 84000,
-	speed: 10,
+	speed: 4,
 	crashDamage: 300,
 	score: 2000,
 	exp: 2000
@@ -19,7 +19,7 @@ const yellowMon = {
 const greenMon = {
 	name: 'green_mon',
 	hpValue: 42000,
-	speed: 10,
+	speed: 4,
 	crashDamage: 300,
 	score: 1000,
 	exp: 1000
