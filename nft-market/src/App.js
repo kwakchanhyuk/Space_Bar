@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Alert, Container, Modal, Button } from "react-bootstrap";
 import './App.css';
 import './market.css';
+import logo from './images/logo.png';
 
 const DEFAULT_QR_CODE = 'DEFAULT';
 const DEFAULT_ADDRESS = "0x000000000000000000000000"
@@ -58,13 +59,18 @@ function App() {
     <div className="App">
       {/* top: 주소 잔고 */}
       <div style={{ backgroundColor: "black", padding: 10 }}>
-        <div style={{ fontSize: 50, fontWeight: "bold", paddingLeft: 5, marginTop: 10, color: "#f40075" }}>SPACE BAR</div>
-        <div style={{ fontSize: 30, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>내 지갑</div>
-        {myAddress}
+        <div id="titleouter" style={{textAlign:"center"}}>
+          <img src={logo} id="logo" width={450} />
+        </div>
+        <span id="mywallet" style={{ fontSize: 30, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>MY Wallet</span>
+        <span id="address">{myAddress}</span>
         <br />
-        <Alert onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#f40075", fontSize: 25 }}>
+        <Alert id="connect" onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#2f007c", fontSize: 25 }}>
           {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "지갑 연동하기"}
         </Alert>
+        {qrvalue == 'DEFAULT' ? (
+        <button id = "gamestartbtn">START Space Bar</button>
+        ) : null}
 
         {/* DEFAULT 아닌 경우에만 QR 코드 */}
         {qrvalue !== 'DEFAULT' ? (
@@ -97,7 +103,7 @@ function App() {
               modalProps.onConfirm();
               setShowModal(false);
             }}
-              style={{ backgroundColor: "#810034", borderColor: "#810034" }}
+              style={{ backgroundColor: "#2f007c", borderColor: "#2f007c" }}
             >진행</Button>
           </Modal.Footer>
         </Modal>
