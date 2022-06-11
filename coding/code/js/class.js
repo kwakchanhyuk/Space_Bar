@@ -26,7 +26,7 @@ class Stage {
 		//allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].bossMon, gameProp.screenWidth);		
 		allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].defaultMon, 450, 210 , Math.floor(Math.random() * 1000));
 		allMonsterComProp.arr[1] = new Monster(stageInfo.monster[0].defaultMon, 1250, 270, Math.floor(Math.random() * 1000));
-		allMonsterComProp.arr[2] = new Monster(stageInfo.monster[0].defaultMon, 2150, 210, Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[2] = new Monster(stageInfo.monster[0].defaultMon, 2150, 230, Math.floor(Math.random() * 1000));
 		allMonsterComProp.arr[3] = new Monster(stageInfo.monster[0].defaultMon, 1000, 30,  Math.floor(Math.random() * 1000));	
 		allMonsterComProp.arr[4] = new Monster(stageInfo.monster[0].defaultMon, 2000, 30,  Math.floor(Math.random() * 1000));	
 	}
@@ -61,9 +61,9 @@ class Hero {
 		this.movex = 0;
 		this.speed = 8;
 		this.direction = 'right';
-		this.attackDamage = 10000000;
+		this.attackDamage = 10000;
 		this.hpProgress = 0;
-		this.hpValue = 10000000000000;
+		this.hpValue = 50000;
 		this.defaultHpValue = this.hpValue;
 		this.realDamage = 0;
 		this.slideSpeed = 5;
@@ -481,7 +481,7 @@ class Monster {
 		let rightDiff = 30;
 		let leftDiff = 90;
 		if(hero.position().right-rightDiff > this.position().left && hero.position().left + leftDiff < this.position().right){
-			if(hero.position().bottom+10 < this.position().top)
+			if(hero.position().bottom+10 < this.position().top && hero.position().top > this.position().bottom)
 			{
 				hero.minusHp(this.crashDamage);
 			}

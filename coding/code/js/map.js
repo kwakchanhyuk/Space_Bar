@@ -10,7 +10,7 @@ const block_1 = {
 const block_2 = {
 	name: 'block_2',
 	x : 1900,
-    y : -160,
+    y : -180,
 }
 
 const block_3 = {
