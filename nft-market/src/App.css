@@ -5,6 +5,13 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'gmarket';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html {
   height: 100%;
   font-size: 14px;
@@ -12,10 +19,44 @@ html {
 
 .App {
   background-color: black;
+  width: 80%;
+  margin: auto;
 }
 
 body {
   height: 100%;
   background-color: black;
   color: white;
+}
+
+#connect {
+  margin: auto;
+  font-family: "gmarket";
+}
+
+#mywallet {
+  font-family: "gmarket";
+  font-weight: bolder;
+}
+
+#address {
+  font-family: "gmarket";
+  margin-left: 20px;
+}
+
+#gamestartbtn{
+  margin-top: 30px;
+  border: 5px solid #2f007c;
+  width: 200px;
+  height: 50px;
+  display: block;
+  align-items: center;
+  border-radius: 12px;
+  justify-content: center;
+  background-color: black;
+  font-family: 'gmarket';
+  font-weight: border;
+  color:white;
+  margin-left: auto;
+  margin-right: auto;
 }
