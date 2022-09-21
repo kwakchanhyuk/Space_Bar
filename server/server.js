@@ -8,6 +8,10 @@ app.listen(8080, function () {
 
 app.use(express.static(path.join(__dirname, 'nft-market/build')));
 
-app.get('/', function(res){
-    res.sendFile(path.join(__dirname, 'nft-market/build/index.html'));
+app.get('/', function(req, res){
+  res.sendFile(path.join(__dirname, 'nft-market/build/index.html'));
+})
+
+app.get('/game', function(req, res){
+  res.sendFile(path.join(__dirname, 'game/index.html'));
 })
