@@ -24,9 +24,9 @@ class Stage {
 
 	callMonster(){		
 		//allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].bossMon, gameProp.screenWidth);		
-		allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].defaultMon, 450, 210 , Math.floor(Math.random() * 1000));
-		allMonsterComProp.arr[1] = new Monster(stageInfo.monster[0].defaultMon, 1250, 270, Math.floor(Math.random() * 1000));
-		allMonsterComProp.arr[2] = new Monster(stageInfo.monster[0].defaultMon, 2150, 230, Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[0] = new Monster(stageInfo.monster[0].defaultMon, 450, 270 , Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[1] = new Monster(stageInfo.monster[0].defaultMon, 1250, 330, Math.floor(Math.random() * 1000));
+		allMonsterComProp.arr[2] = new Monster(stageInfo.monster[0].defaultMon, 2150, 290, Math.floor(Math.random() * 1000));
 		allMonsterComProp.arr[3] = new Monster(stageInfo.monster[0].defaultMon, 1000, 30,  Math.floor(Math.random() * 1000));	
 		allMonsterComProp.arr[4] = new Monster(stageInfo.monster[0].defaultMon, 2000, 30,  Math.floor(Math.random() * 1000));	
 	}
@@ -78,7 +78,7 @@ class Hero {
 		this.jumptimer = 0;
 		this.jump_flag = 0;
 		this.jump_speed = 8;
-		this.jump_height = 25; // 점프 높이 변수 추가
+		this.jump_height = 30; // 점프 높이 변수 추가
 		this.wall_flag = 0; // wall_flag변수 추가 캐릭터가 바닥이면 0 구조물이면 1로 할 예정
 		this.error_jump = 0; // 더블 점프를 막기 위한 변수
 	}
