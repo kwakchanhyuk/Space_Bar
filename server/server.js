@@ -13,5 +13,5 @@ app.get('/', function(req, res){
 })
 
 app.get('/game', function(req, res){
-  res.sendFile(path.join(__dirname, '../coding/code/index.html'));
+  res.sendFile(path.join(__dirname, 'game/coding/code/index.html'));
 })
