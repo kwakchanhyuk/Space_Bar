@@ -141,7 +141,10 @@ class Hero {
 			this.slideTime = 0;
 		}
 
-		if(key.keyDown['jump'] && this.jump_flag == 0 && !this.error_jump){this.jump_flag = 1;}
+		if(key.keyDown['jump'] && this.jump_flag == 0 && !this.error_jump){
+			this.jump_flag = 1;
+			this.el.classList.add('jump');
+		}
 		if(this.jump_flag == 1 ){			 // 올라갈때
 			this.movey-= this.jump_speed;
 			this.jumptimer++;
@@ -151,7 +154,9 @@ class Hero {
 			this.movey+= this.jump_speed;
 			this.jumptimer--;
 			if(this.jumptimer < 1){
-				{this.jump_flag = 0;}
+				{this.jump_flag = 0;
+				this.el.classList.remove('jump');
+				}
 			}
 		}
 
