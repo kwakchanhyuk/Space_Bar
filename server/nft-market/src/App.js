@@ -11,6 +11,7 @@ import logo from './images/logo.png';
 
 const DEFAULT_QR_CODE = 'DEFAULT';
 const DEFAULT_ADDRESS = "0x000000000000000000000000"
+
 function App() {
   // Global Data
   // 1. address
@@ -28,10 +29,25 @@ function App() {
   // const [mintImageUrl, setMintImageUrl] = useState("");
   // 3. Modal
   const [showModal, setShowModal] = useState(false);
+
+  // const click_start = () => {
+  //   const addButton = document.querySelector('#btn')
+
+  // }
+
   const [modalProps, setModalProps] = useState({
     title: "MODAL",
     onConfirm: () => { }
   });
+
+
+
+  const game_start = () => {
+    window.window.open('../../game')
+
+  };
+
+
 
   // getUserData
   const getUserData = () => {
@@ -55,6 +71,8 @@ function App() {
     // fetchMarketNFTs();
   }, [])
 
+
+  
   return (
     <div className="App">
       {/* top: 주소 잔고 */}
@@ -69,7 +87,9 @@ function App() {
           {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "지갑 연동하기"}
         </Alert>
         {qrvalue == 'DEFAULT' ? (
-        <button id = "gamestartbtn">START Space Bar</button>
+
+        <button id = "gamestartbtn" onClick={game_start}>START Space Bar</button>
+        
         ) : null}
 
         {/* DEFAULT 아닌 경우에만 QR 코드 */}
