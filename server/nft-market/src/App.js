@@ -12,6 +12,14 @@ import logo from './images/logo.png';
 const DEFAULT_QR_CODE = 'DEFAULT';
 const DEFAULT_ADDRESS = "0x000000000000000000000000"
 
+
+// function btn_condition(DEFAULT_ADDRESS){
+//   if (DEFAULT_ADDRESS == "0x000000000000000000000000") {
+//     return null
+//   } 
+//   return <button id = "gamestartbtn" onClick={game_start}>START Space Bar</button>
+// } 
+
 function App() {
   // Global Data
   // 1. address
@@ -43,10 +51,14 @@ function App() {
 
 
   const game_start = () => {
-    window.window.open('../../game')
-
+    setModalProps({
+      title: "게임을 시작하시겠습니까?",
+      onConfirm: () => {
+        window.location.replace('../../game')
+      }
+    });
+    setShowModal(true);
   };
-
 
 
   // getUserData
@@ -86,18 +98,14 @@ function App() {
         <Alert id="connect" onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#2f007c", fontSize: 25 }}>
           {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "지갑 연동하기"}
         </Alert>
-        {qrvalue == 'DEFAULT' ? (
-
-        <button id = "gamestartbtn" onClick={game_start}>START Space Bar</button>
-        
-        ) : null}
+        {(qrvalue == 'DEFAULT' ) && (myAddress !== DEFAULT_ADDRESS )? ( <button id = "gamestartbtn" onClick={game_start}>START Space Bar</button> ) : null}
 
         {/* DEFAULT 아닌 경우에만 QR 코드 */}
         {qrvalue !== 'DEFAULT' ? (
           <Container style={{ backgroundColor: "white", width: 300, height: 300, padding: 20 }}>
             <QRCode value={qrvalue} size={256} style={{ margin: "auto" }} />
           </Container>) : null}
-
+        
         <br />
 
         {/* 모달 */}
