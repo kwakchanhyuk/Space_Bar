@@ -1,24 +1,18 @@
-import axios from "axios";
-import QRCode from 'qrcode.react';
 import { useEffect, useState } from "react";
-import { getBalance } from './api/UseCaver';
+import QRCode from 'qrcode.react';
+import { MARKET_CONTRACT_ADDRESS } from "./constants";
+import { fetchCardsOf, getBalance } from './api/UseCaver';
 import * as KlipAPI from "./api/UseKlip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faWallet } from "@fortawesome/free-solid-svg-icons";
+import { Alert, Container, Card, Nav, Button, Modal, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Alert, Container, Modal, Button } from "react-bootstrap";
 import './App.css';
 import './market.css';
 import logo from './images/logo.png';
 
 const DEFAULT_QR_CODE = 'DEFAULT';
 const DEFAULT_ADDRESS = "0x000000000000000000000000"
-
-
-// function btn_condition(DEFAULT_ADDRESS){
-//   if (DEFAULT_ADDRESS == "0x000000000000000000000000") {
-//     return null
-//   } 
-//   return <button id = "gamestartbtn" onClick={game_start}>START Space Bar</button>
-// } 
 
 function App() {
   // Global Data
@@ -27,28 +21,77 @@ function App() {
   // 2. 잔고
   const [myBalance, setMyBalance] = useState("0");
   // 3. NFT
-  // const [nfts, setNfts] = useState([]);
+  const [nfts, setNfts] = useState([]);
 
   // UI
   const [qrvalue, setQrvalue] = useState(DEFAULT_QR_CODE);
   // 1. Tab 메뉴
-  // const [tab, setTab] = useState('MARKET'); // MARKET, MINT, WALLET
+  const [tab, setTab] = useState('WALLET'); // MARKET, MINT, WALLET
   // 2. mintInput
   // const [mintImageUrl, setMintImageUrl] = useState("");
   // 3. Modal
   const [showModal, setShowModal] = useState(false);
-
-  // const click_start = () => {
-  //   const addButton = document.querySelector('#btn')
-
-  // }
-
   const [modalProps, setModalProps] = useState({
     title: "MODAL",
     onConfirm: () => { }
   });
 
+  // NFT 갤러리 행
+  const rows = nfts.slice(nfts.length / 3);
 
+  // function
+  // 1. fetchMarketNFTs
+  const fetchMarketNFTs = async () => {
+    const _nfts = await fetchCardsOf(MARKET_CONTRACT_ADDRESS);
+    setNfts(_nfts);
+  }
+
+  // 2. fetchMyNFTs
+  const fetchMyNFTs = async () => {
+    if (myAddress === DEFAULT_ADDRESS) {
+      alert('NO ADDRESS');
+      return;
+    }
+    const _nfts = await fetchCardsOf(myAddress);
+    setNfts(_nfts);
+  }
+
+  // 3. onClickMyCard
+  const onClickMyCard = (tokenId) => {
+    KlipAPI.listingCard(myAddress, tokenId, setQrvalue, (result) => {
+      alert(JSON.stringify(result));
+    });
+  }
+
+  // 4. onClickMarketCard
+  const onClickMarketCard = (tokenId) => {
+    KlipAPI.buyCard(tokenId, setQrvalue, (result) => {
+      alert(JSON.stringify(result));
+    });
+  }
+
+  const onClickCard = (id) => {
+
+    if (tab === 'WALLET') {
+      // 판매 하시겠습니까 모달
+      setModalProps({
+        title: "NFT를 마켓에 올리시겠어요?",
+        onConfirm: () => {
+          onClickMyCard(id);
+        }
+      })
+    }
+    if (tab === 'MARKET') {
+      // 구매 하시겠습니까 모달
+      setModalProps({
+        title: "NFT를 구매하시겠어요?",
+        onConfirm: () => {
+          onClickMarketCard(id);
+        }
+      })
+    }
+    setShowModal(true);
+  }
 
   const game_start = () => {
     setModalProps({
@@ -61,6 +104,7 @@ function App() {
   };
 
 
+
   // getUserData
   const getUserData = () => {
     // 지갑을 연동하시겠습니까 모달
@@ -68,7 +112,7 @@ function App() {
       title: "Klip 지갑을 연동하시겠습니까?",
       onConfirm: () => {
         KlipAPI.getAddress(setQrvalue, async (address) => {
-          setMyAddress(address);
+          setMyAddress(address).then(fetchMyNFTs());
           const _balance = await getBalance(address);
           setMyBalance(_balance);
         });
@@ -80,7 +124,6 @@ function App() {
   // 처음 실행했을 때 나오는 화면 -> useEffect
   useEffect(() => {
     getUserData();
-    // fetchMarketNFTs();
   }, [])
 
 
@@ -107,35 +150,91 @@ function App() {
           </Container>) : null}
         
         <br />
+        
+        {/* middle: 갤러리 (마켓, 내 지갑) */}
+        {tab === 'MARKET' || tab === 'WALLET' ? (
+          <div className="container" style={{ padding: 0, width: "100%" }}>
+            {rows.map((o, rowIndex) => (
+              <Row key={`rowkey${rowIndex}`}>
+                <Col style={{marginRight: 0, paddingRight: 0}}>
+                  <Card onClick={() => {
+                    onClickCard(nfts[rowIndex*3].id);
+                  }}>
+                    <Card.Img src={nfts[rowIndex*3].uri} />
+                  </Card>
+                  [{nfts[rowIndex*3].id}] NFT
+                </Col>
+                <Col style={{marginRight: 0, paddingRight: 0}}>
+                  {nfts.length > rowIndex * 3 + 1 ? (
+                    <Card onClick={() => {
+                      onClickCard(nfts[rowIndex*3].id);
+                    }}>
+                      <Card.Img src={nfts[rowIndex*3].uri} />
+                    </Card>
+                  ): null}
 
-        {/* 모달 */}
-        <Modal
-          centered
-          size="sm"
-          show={showModal}
-          onHide={() => {
+                  {nfts.length > rowIndex * 3 + 1 ? (
+                    <>[{nfts[rowIndex*3].id}] NFT</>
+                  ): null}
+                  
+                </Col>
+              </Row>
+            ))}
+          </div>
+        ) : null}
+
+      </div>
+
+      {/* 모달 */}
+      <Modal
+        centered
+        size="sm"
+        show={showModal}
+        onHide={() => {
+          setShowModal(false);
+        }}
+      >
+
+        <Modal.Header
+          style={{ border: 0, backgroundColor: "black", opacity: 0.8 }}
+        >
+          <Modal.Title>
+            {modalProps.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Footer style={{ border: 0, backgroundColor: "black", opacity: 0.8 }}>
+          <Button variant="secondary" onClick={() => { setShowModal(false); }}>닫기</Button>
+          <Button variant="primary" onClick={() => {
+            modalProps.onConfirm();
             setShowModal(false);
           }}
-        >
+            style={{ backgroundColor: "#2f007c", borderColor: "#2f007c" }}
+          >진행</Button>
+        </Modal.Footer>
+      </Modal>
 
-          <Modal.Header
-            style={{ border: 0, backgroundColor: "black", opacity: 0.8 }}
-          >
-            <Modal.Title>
-              {modalProps.title}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Footer style={{ border: 0, backgroundColor: "black", opacity: 0.8 }}>
-            <Button variant="secondary" onClick={() => { setShowModal(false); }}>닫기</Button>
-            <Button variant="primary" onClick={() => {
-              modalProps.onConfirm();
-              setShowModal(false);
-            }}
-              style={{ backgroundColor: "#2f007c", borderColor: "#2f007c" }}
-            >진행</Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
+      {/* bottom: 탭 메뉴 */}
+      <nav style={{ backgroundColor: "#1b1717", height: 45 }} className="navbar fixed-bottom navbar-light" role="navigation">
+        <Nav className="w-100">
+          <div className="d-flex flex-row justify-content-around w-100">
+
+            <div onClick={() => {
+              setTab("WALLET");
+              fetchMyNFTs();
+            }} className="row d-flex flex-column justify-content-center align-items-center">
+              <div><FontAwesomeIcon color="white" size="lg" icon={faWallet}/></div>
+            </div>
+
+            <div onClick={() => {
+              setTab("MARKET");
+              fetchMarketNFTs();
+            }} className="row d-flex flex-column justify-content-center align-items-center">
+              <div><FontAwesomeIcon color="white" size="lg" icon={faHome}/></div>
+            </div>
+
+          </div>
+        </Nav>
+      </nav>     
     </div>
   );
 }
