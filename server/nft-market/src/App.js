@@ -4,7 +4,7 @@ import { MARKET_CONTRACT_ADDRESS } from "./constants";
 import { fetchCardsOf, getBalance } from './api/UseCaver';
 import * as KlipAPI from "./api/UseKlip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faStore, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { Alert, Container, Card, Nav, Button, Modal, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
@@ -229,7 +229,7 @@ function App() {
               setTab("MARKET");
               fetchMarketNFTs();
             }} className="row d-flex flex-column justify-content-center align-items-center">
-              <div><FontAwesomeIcon color="white" size="lg" icon={faHome}/></div>
+              <div><FontAwesomeIcon color="white" size="lg" icon={faStore}/></div>
             </div>
 
           </div>
