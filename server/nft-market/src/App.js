@@ -17,9 +17,21 @@ const DEFAULT_ADDRESS = "0x000000000000000000000000"
 function App() {
   // Global Data
   // 1. address
-  const [myAddress, setMyAddress] = useState(DEFAULT_ADDRESS);
+  const [myAddress, setMyAddress] = useState(
+    () => JSON.parse(window.localStorage.getItem("myAddress")) || DEFAULT_ADDRESS
+  );
+  useEffect(() => {
+    window.localStorage.setItem("myAddress", JSON.stringify(myAddress));
+  }, [myAddress]);
+
   // 2. 잔고
-  const [myBalance, setMyBalance] = useState("0");
+  const [myBalance, setMyBalance] = useState(
+    () => JSON.parse(window.localStorage.getItem("myBalance")) || "0"
+  );
+  useEffect(() => {
+    window.localStorage.setItem("myBalance", JSON.stringify(myBalance));
+  }, [myBalance]);
+
   // 3. NFT
   const [nfts, setNfts] = useState([]);
 
@@ -121,9 +133,17 @@ function App() {
     setShowModal(true);
   };
 
+  const logout = () => {
+    setMyAddress(DEFAULT_ADDRESS);
+    setMyBalance("0");
+    getUserData();
+  };
+
   // 처음 실행했을 때 나오는 화면 -> useEffect
   useEffect(() => {
-    getUserData();
+    if (myAddress == DEFAULT_ADDRESS) {
+      getUserData();
+    }
   }, [])
 
 
@@ -137,6 +157,7 @@ function App() {
         </div>
         <span id="mywallet" style={{ fontSize: 30, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>MY Wallet</span>
         <span id="address">{myAddress}</span>
+        {(myAddress !== DEFAULT_ADDRESS )? ( <button id = "" onClick={logout}>LOGOUT</button> ) : null}
         <br />
         <Alert id="connect" onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#2f007c", fontSize: 25 }}>
           {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "지갑 연동하기"}
