@@ -60,7 +60,7 @@ export const executeContract = (txTo, functionJSON, value, params, setQrvalue, c
     ).then((response) => {
         const { request_key } = response.data;
 
-        setQrvalue(getKlipAccessUrl("QR", request_key));
+        setQrvalue(getKlipAccessUrl(request_key));
 
         let timerId = setInterval(() => {
             axios.get(`https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${request_key}`).then((res) => {
