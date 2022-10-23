@@ -37,7 +37,7 @@ function App() {
   });
 
   // NFT 갤러리 행
-  const rows = nfts.slice(nfts.length / 3);
+  const rows = nfts.slice(nfts.length / 2);
 
   // function
   // 1. fetchMarketNFTs
@@ -112,7 +112,7 @@ function App() {
       title: "Klip 지갑을 연동하시겠습니까?",
       onConfirm: () => {
         KlipAPI.getAddress(setQrvalue, async (address) => {
-          setMyAddress(address).then(fetchMyNFTs());
+          setMyAddress(address);
           const _balance = await getBalance(address);
           setMyBalance(_balance);
         });
@@ -158,23 +158,23 @@ function App() {
               <Row key={`rowkey${rowIndex}`}>
                 <Col style={{marginRight: 0, paddingRight: 0}}>
                   <Card onClick={() => {
-                    onClickCard(nfts[rowIndex*3].id);
+                    onClickCard(nfts[rowIndex*2].id);
                   }}>
-                    <Card.Img src={nfts[rowIndex*3].uri} />
+                    <Card.Img src={nfts[rowIndex*2].uri} />
                   </Card>
-                  [{nfts[rowIndex*3].id}] NFT
+                  [{nfts[rowIndex*2].id}] NFT
                 </Col>
                 <Col style={{marginRight: 0, paddingRight: 0}}>
-                  {nfts.length > rowIndex * 3 + 1 ? (
+                  {nfts.length > rowIndex * 2 + 1 ? (
                     <Card onClick={() => {
-                      onClickCard(nfts[rowIndex*3].id);
+                      onClickCard(nfts[rowIndex*2+1].id);
                     }}>
-                      <Card.Img src={nfts[rowIndex*3].uri} />
+                      <Card.Img src={nfts[rowIndex*2+1].uri} />
                     </Card>
                   ): null}
 
-                  {nfts.length > rowIndex * 3 + 1 ? (
-                    <>[{nfts[rowIndex*3].id}] NFT</>
+                  {nfts.length > rowIndex * 2 + 1 ? (
+                    <>[{nfts[rowIndex*2+1].id}] NFT</>
                   ): null}
                   
                 </Col>
