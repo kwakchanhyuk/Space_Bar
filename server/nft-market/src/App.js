@@ -157,7 +157,7 @@ function App() {
         </div>
         <span id="mywallet" style={{ fontSize: 30, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>MY Wallet</span>
         <span id="address">{myAddress}</span>
-        {(myAddress !== DEFAULT_ADDRESS )? ( <button id = "" onClick={logout}>LOGOUT</button> ) : null}
+        {(myAddress !== DEFAULT_ADDRESS )? ( <button id = "logoutbtn" onClick={logout}>LOGOUT</button> ) : null}
         <br />
         <Alert id="connect" onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#2f007c", fontSize: 25 }}>
           {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "지갑 연동하기"}

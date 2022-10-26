@@ -60,3 +60,20 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+
+#logoutbtn{
+  margin-top: 30px;
+  border: 3px solid #2f007c;
+  width: 100px;
+  height: 30px;
+  display: block;
+  align-items: center;
+  border-radius: 12px;
+  justify-content: center;
+  background-color: black;
+  font-family: 'gmarket';
+  font-weight: border;
+  color:white;
+  float:right;
+  margin: auto;
+}
